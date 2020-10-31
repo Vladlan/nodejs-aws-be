@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "target": "es2017",
     "outDir": "lib"
