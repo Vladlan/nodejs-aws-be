@@ -11,7 +11,8 @@ const serverlessConfiguration: Serverless = {
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
-      includeModules: true
+      includeModules: true,
+      excludeFiles: 'src/**/*.spec.[t|j]s'
     }
   },
   // Add the serverless-webpack plugin

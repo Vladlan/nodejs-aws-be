@@ -3,7 +3,7 @@ import * as products from '../products/products.json';
 import 'source-map-support/register';
 import {corsHeaders, errorMessages} from '../utils';
 
-export const getAllProducts: APIGatewayProxyHandler = async (event, _context) => {
+export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
     const { productId } = event.pathParameters;
     if (productId) {
         const product = products.find(({ id }) => productId === id);
