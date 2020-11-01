@@ -3,7 +3,7 @@ import * as products from '../products/products.json';
 import 'source-map-support/register';
 import { errorMessages } from '../utils';
 
-export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
+export const getAllProducts: APIGatewayProxyHandler = async (event, _context) => {
     const { productId } = event.pathParameters;
     if (productId) {
         const product = products.find(({ id }) => productId === id);
@@ -17,7 +17,6 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
             statusCode: 404,
             body: errorMessages.notFound(productId),
         }
-
     }
     return {
         statusCode: 404,

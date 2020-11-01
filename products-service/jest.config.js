@@ -13,7 +13,7 @@ module.exports = {
   "globals": {
     "ts-jest": {
       "babelConfig": true,
-      "tsConfig": "jest.tsconfig.json"
+      "tsconfig": "tsconfig.json"
     }
   },
   "coveragePathIgnorePatterns": [
