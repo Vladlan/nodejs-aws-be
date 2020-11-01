@@ -18,9 +18,9 @@ describe('getProductById', () => {
         const { statusCode } = await getAllProducts(event, context, callback) || { statusCode: null };
         expect(statusCode).toBe(404);
     });
-    test('should return 404 event is without productId', async () => {
+    test('should return 400 event is without productId', async () => {
         const event = {pathParameters: {}} as unknown as APIGatewayProxyEvent;
         const { statusCode } = await getAllProducts(event, context, callback) || { statusCode: null };
-        expect(statusCode).toBe(404);
+        expect(statusCode).toBe(400);
     });
 });
