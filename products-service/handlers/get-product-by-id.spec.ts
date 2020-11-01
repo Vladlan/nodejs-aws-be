@@ -14,7 +14,7 @@ describe('getProductById', () => {
         expect(statusCode).toBe(200);
     });
     test('should return 404 if product with provided id does not exists', async () => {
-        const event = {pathParameters: {productId: ''}} as unknown as APIGatewayProxyEvent;
+        const event = {pathParameters: {productId: '123123'}} as unknown as APIGatewayProxyEvent;
         const { statusCode } = await getProductById(event, context, callback) || { statusCode: null };
         expect(statusCode).toBe(404);
     });
