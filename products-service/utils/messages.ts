@@ -9,4 +9,6 @@ export const messages = {
     failToCreateTables: (err: Error) => `Failed to create tables. Error: ${JSON.stringify(err, null, 2)}`,
     failToQueryAllProduct: (err: Error) => `Failed to query all products. Error: ${JSON.stringify(err, null, 2)}`,
     failToQueryProduct: (err: Error) => `Failed to query product. Error: ${JSON.stringify(err, null, 2)}`,
+    failToCreateProduct: (err: Error) => `Failed to create product. Error: ${JSON.stringify(err, null, 2)}`,
+    wrongProductData: `Wrong product data`,
 };

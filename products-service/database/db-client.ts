@@ -4,6 +4,8 @@ import { Product } from '../types';
 import { 
   SELECT_ALL_PRODUCTS,
   SELECT_PRODUCT,
+  INSERT_PRODUCT,
+  INSERT_STOCK,
 } from './sql-queries'
 import { messages } from '../utils';
 
@@ -38,6 +40,19 @@ export class DBClient {
       return rows;
     } catch (err) {
       throw new Error(messages.failToQueryProduct(err));
+    }
+  }
+
+  async createProduct({id, title, description, price, count}: Product): Promise<Product> {
+    try {
+      await this.client.query('BEGIN');
+      await this.client.query(INSERT_PRODUCT, [id, title, description, price]);
+      await this.client.query(INSERT_STOCK, [id, count]);
+      const { rows } = await this.client.query(SELECT_PRODUCT, [id]);
+      await this.client.query('COMMIT');
+      return rows;
+    } catch (err) {
+      throw new Error(messages.failToCreateProduct(err));
     }
   }
 

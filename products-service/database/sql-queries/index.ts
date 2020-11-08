@@ -17,6 +17,16 @@ SELECT id, title, description, price, count FROM
 ) count;
 `;
 
+export const INSERT_STOCK = `
+INSERT INTO stocks (product_id, count) VALUES
+($1::uuid, $2::integer)
+`;
+
+export const INSERT_PRODUCT = `
+INSERT INTO products (id, title, description, price) VALUES
+($1::uuid, $2::text, $3::text, $4::integer)
+`;
+
 export const CREATE_UUID_EXTENSION = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
 
 export const CREATE_PRODUCTS_TABLE = `
