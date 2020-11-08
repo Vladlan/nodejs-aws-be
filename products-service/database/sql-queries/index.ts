@@ -7,6 +7,16 @@ SELECT id, title, description, price, count FROM
 ) count;
 `;
 
+export const SELECT_PRODUCT = `
+SELECT id, title, description, price, count FROM
+(
+  SELECT * FROM products
+  INNER JOIN stocks
+  ON stocks.product_id = products.id
+  WHERE id = $1::uuid
+) count;
+`;
+
 export const CREATE_UUID_EXTENSION = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
 
 export const CREATE_PRODUCTS_TABLE = `
@@ -27,6 +37,7 @@ CREATE TABLE IF NOT EXISTS stocks (
 );
 `;
 
+// TODO: remove this and add migrations.
 export const INSERT_PRODUCTS = `
   INSERT INTO products (id, title, description, price) VALUES 
   ('7567ec4b-b10c-48c5-9345-fc73c48a80aa', 'Product 1', 'Short Product Description1', 2.4), 

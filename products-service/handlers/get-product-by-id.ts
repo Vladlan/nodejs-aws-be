@@ -1,13 +1,16 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import * as products from '../products/products.json';
 import 'source-map-support/register';
 import { corsHeaders, messages } from '../utils';
+import { DBClient } from "../database"
 
 export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
+    let client;
     try {
         const { productId } = event.pathParameters;
-        if (productId) {
-            const product = products.find(({ id }) => productId === id);
+        if (productId && productId.length === 36) {
+            client = new DBClient();
+            await client.connect();
+            const product = await client.getProductById(productId);
             if (product) {
                 return {
                     statusCode: 200,
@@ -24,13 +27,16 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
         return {
             statusCode: 400,
             headers: corsHeaders,
-            body: messages.idHasNotBeenProvided,
+            body: messages.idIsWrong,
         }
     } catch (err) {
+        console.error(err);
         return {
             statusCode: 500,
             headers: corsHeaders,
             body: messages.internalServerError,
         };
+    } finally {
+        await client.disconnect();
     }
 };

@@ -2,7 +2,8 @@ import { Client } from 'pg';
 import { DB_CONFIG } from './db.config';
 import { Product } from '../types';
 import { 
-  SELECT_ALL_PRODUCTS
+  SELECT_ALL_PRODUCTS,
+  SELECT_PRODUCT,
 } from './sql-queries'
 import { messages } from '../utils';
 
@@ -18,7 +19,6 @@ export class DBClient {
       await this.client.connect();
       console.log(messages.successDbConnection);
     } catch (err) {
-      console.error(messages.failDbConnection(err));
       throw new Error(messages.failDbConnection(err));
     }
   }
@@ -28,8 +28,16 @@ export class DBClient {
       const { rows } = await this.client.query(SELECT_ALL_PRODUCTS);
       return rows;
     } catch (err) {
-      console.error(messages.failToQueryAllProduct(err));
       throw new Error(messages.failToQueryAllProduct(err));
+    }
+  }
+
+  async getProductById(id: string): Promise<Product> {
+    try {
+      const { rows } = await this.client.query(SELECT_PRODUCT, [id]);
+      return rows;
+    } catch (err) {
+      throw new Error(messages.failToQueryProduct(err));
     }
   }
 
@@ -38,7 +46,6 @@ export class DBClient {
       await this.client.end();
       console.log(messages.successDbDisconnection);
     } catch (err) {
-      console.error(messages.failDbDisconnection(err));
       throw new Error(messages.failDbDisconnection(err));
     }
   }
