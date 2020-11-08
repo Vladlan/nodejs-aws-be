@@ -4,7 +4,7 @@ SELECT id, title, description, price, count FROM
   SELECT * FROM products
   INNER JOIN stocks
   ON products.id = stocks.product_id
-);
+) count;
 `;
 
 export const CREATE_UUID_EXTENSION = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
