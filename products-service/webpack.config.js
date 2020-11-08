@@ -1,7 +1,11 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv').config( {
+  path: path.join(__dirname, '.env')
+} );
 
 module.exports = {
   context: __dirname,
@@ -47,5 +51,8 @@ module.exports = {
     //     cache: true
     //   }
     // })
+    new webpack.DefinePlugin( {
+      "process.env": dotenv.parsed
+    } ),
   ],
 };

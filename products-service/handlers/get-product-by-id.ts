@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import * as products from '../products/products.json';
 import 'source-map-support/register';
-import { corsHeaders, errorMessages } from '../utils';
+import { corsHeaders, messages } from '../utils';
 
 export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
     try {
@@ -18,19 +18,19 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
             return {
                 statusCode: 404,
                 headers: corsHeaders,
-                body: errorMessages.notFound(productId),
+                body: messages.notFound(productId),
             }
         }
         return {
             statusCode: 400,
             headers: corsHeaders,
-            body: errorMessages.idHasNotBeenProvided,
+            body: messages.idHasNotBeenProvided,
         }
     } catch (err) {
         return {
             statusCode: 500,
             headers: corsHeaders,
-            body: errorMessages.internalServerError,
+            body: messages.internalServerError,
         };
     }
 };

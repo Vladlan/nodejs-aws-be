@@ -1,4 +1,5 @@
 import type { Serverless } from 'serverless/aws';
+const { DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = process.env;
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -26,6 +27,7 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD,
     },
   },
   functions: {

@@ -1,10 +1,14 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import * as products from '../products/products.json';
-import { corsHeaders, errorMessages } from "../utils";
+import { corsHeaders, messages } from "../utils";
+import { DBClient } from "../database"
 
 export const getAllProducts: APIGatewayProxyHandler = async (_event, _context) => {
     try {
+        const client = new DBClient();
+        await client.connect();
+        const products = await client.getAllProducts();
+
         return {
             statusCode: 200,
             headers: corsHeaders,
@@ -14,7 +18,7 @@ export const getAllProducts: APIGatewayProxyHandler = async (_event, _context) =
         return {
             statusCode: 500,
             headers: corsHeaders,
-            body: errorMessages.internalServerError,
+            body: messages.internalServerError,
         };
     }
 }
