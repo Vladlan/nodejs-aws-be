@@ -27,6 +27,7 @@ INSERT INTO products (id, title, description, price) VALUES
 ($1::uuid, $2::text, $3::text, $4::integer)
 `;
 
+// TODO: implement migrations from lines below
 export const CREATE_UUID_EXTENSION = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
 
 export const CREATE_PRODUCTS_TABLE = `
@@ -47,7 +48,6 @@ CREATE TABLE IF NOT EXISTS stocks (
 );
 `;
 
-// TODO: remove this and add migrations.
 export const INSERT_PRODUCTS = `
   INSERT INTO products (id, title, description, price) VALUES 
   ('7567ec4b-b10c-48c5-9345-fc73c48a80aa', 'Product 1', 'Short Product Description1', 2.4), 

@@ -17,7 +17,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
             const products = await client.createProduct(productData);
     
             return {
-                statusCode: 200,
+                statusCode: 201,
                 headers: corsHeaders,
                 body: JSON.stringify(products, null, 2),
             };
