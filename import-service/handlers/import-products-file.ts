@@ -3,6 +3,13 @@ import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import {corsHeaders, logLambdaArgs, messages} from '../../shared/utils'
 
+export const getS3Params = (csvFileName) => ({
+  Bucket: 'bucket-for-task-5',
+  Key: `uploaded/${csvFileName}`,
+  Expires: 50,
+  ContentType: 'text/csv'
+});
+
 export const importProductsFile: APIGatewayProxyHandler = async (event, _context) => {
   logLambdaArgs(event, _context);
   try {
@@ -10,17 +17,11 @@ export const importProductsFile: APIGatewayProxyHandler = async (event, _context
     const {csvFileName} = event.queryStringParameters;
     if (csvFileName) {
       console.log(csvFileName);
-      const params = {
-        Bucket: 'bucket-for-task-5',
-        Key: `uploaded/${csvFileName}`,
-        Expires: 50,
-        ContentType: 'text/csv'
-      };
-      const urlResponse = s3.getSignedUrl('putObject', params);
+      const signedUrl = await s3.getSignedUrlPromise('putObject', getS3Params(csvFileName));
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify(urlResponse, null, 2)
+        body: JSON.stringify(signedUrl, null, 2)
       };
     }
     return {
