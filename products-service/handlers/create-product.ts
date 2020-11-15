@@ -1,10 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import { messages, validateProductData, logLambdaArgs } from "../utils";
+import { validateProductData } from "../utils";
 import { DBClient } from "../database"
 import { Product } from '../types';
-import { corsHeaders } from '../../common/utils'
-
+import { corsHeaders, logLambdaArgs, messages } from '../../shared/utils'
 
 export const createProduct: APIGatewayProxyHandler = async (event, _context) => {
     logLambdaArgs(event, _context);

@@ -1,4 +1,5 @@
 import type {Serverless} from 'serverless/aws';
+import {S3_BUCKET_NAME} from "./utils";
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -30,7 +31,7 @@ const serverlessConfiguration: Serverless = {
       {
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: 'arn:aws:s3:::bucket-for-task-5/*'
+        Resource: `arn:aws:s3:::${S3_BUCKET_NAME}/*`
       }
     ]
   },
@@ -43,6 +44,21 @@ const serverlessConfiguration: Serverless = {
             method: 'get',
             path: 'import/',
             cors: true,
+          }
+        }
+      ]
+    },
+    importFileParser: {
+      handler: 'handlers/import-file-parser/index.importFileParser',
+      events: [
+        {
+          s3: {
+            bucket: S3_BUCKET_NAME,
+            event: 's3:ObjectCreated:*',
+            rules: [
+              {prefix: 'uploaded', suffix: '.csv', },
+            ],
+            existing: true
           }
         }
       ]
