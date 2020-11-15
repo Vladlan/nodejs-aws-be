@@ -1,8 +1,10 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import { corsHeaders, messages, validateProductData, logLambdaArgs } from "../utils";
+import { messages, validateProductData, logLambdaArgs } from "../utils";
 import { DBClient } from "../database"
 import { Product } from '../types';
+import { corsHeaders } from '../../common/utils'
+
 
 export const createProduct: APIGatewayProxyHandler = async (event, _context) => {
     logLambdaArgs(event, _context);
@@ -15,7 +17,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
         if (isValid) {
             await client.connect();
             const products = await client.createProduct(productData);
-    
+
             return {
                 statusCode: 201,
                 headers: corsHeaders,
