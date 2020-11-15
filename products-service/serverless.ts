@@ -1,4 +1,8 @@
 import type { Serverless } from 'serverless/aws';
+const dotenv = require('dotenv').config( {
+  path: '.env'
+} );
+const { DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = dotenv.parsed;
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -26,6 +30,11 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      DB_HOST, 
+      DB_PORT, 
+      DB_DATABASE,
+      DB_USERNAME,
+      DB_PASSWORD
     },
   },
   functions: {
@@ -48,6 +57,18 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products/{productId}',
+            cors: true,
+          }
+        }
+      ]
+    },
+    createProduct: {
+      handler: 'handlers/create-product.createProduct',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'products',
             cors: true,
           }
         }
