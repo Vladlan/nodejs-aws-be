@@ -2,9 +2,10 @@ import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import {getRes200, getRes400, getRes500, logLambdaArgs, messages} from '../../shared/utils'
+import {S3_BUCKET_NAME} from '../utils';
 
 export const getS3Params = (csvFileName) => ({
-  Bucket: 'bucket-for-task-5',
+  Bucket: S3_BUCKET_NAME,
   Key: `uploaded/${csvFileName}`,
   Expires: 50,
   ContentType: 'text/csv'
