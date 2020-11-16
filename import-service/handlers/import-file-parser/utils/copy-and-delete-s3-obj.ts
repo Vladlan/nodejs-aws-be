@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import * as path from "path";
-import {S3_BUCKET_NAME} from "../../utils";
+import {S3_BUCKET_NAME} from "../../../utils";
 
 export const copyAndDeleteS3Obj = async (sourceKey: string, destKey: string, s3: AWS.S3) => {
   await s3

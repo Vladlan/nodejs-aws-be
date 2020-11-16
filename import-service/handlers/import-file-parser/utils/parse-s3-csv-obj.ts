@@ -1,5 +1,5 @@
 import * as AWS from "aws-sdk";
-import {S3_BUCKET_NAME} from "../../utils";
+import {S3_BUCKET_NAME} from "../../../utils";
 import * as CSV_PARSER from "csv-parser";
 
 export const parseS3CsvObj = (objectKey, s3: AWS.S3): Promise<any[]> => new Promise((res, rej) => {

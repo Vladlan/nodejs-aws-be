@@ -2,8 +2,7 @@ import {S3Handler} from 'aws-lambda';
 import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import {logLambdaArgs} from '../../../shared/utils';
-import {parseS3CsvObj} from "./parse-s3-csv-obj";
-import {copyAndDeleteS3Obj} from "./copy-and-delete-s3-obj";
+import {copyAndDeleteS3Obj, parseS3CsvObj} from "./utils";
 
 export const importFileParser: S3Handler = async (event, _context) => {
   logLambdaArgs(event, _context);

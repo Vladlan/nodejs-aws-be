@@ -37,7 +37,7 @@ const serverlessConfiguration: Serverless = {
   },
   functions: {
     importProductsFile: {
-      handler: 'handlers/import-products-file.importProductsFile',
+      handler: 'handlers/index.importProductsFile',
       events: [
         {
           http: {
@@ -49,7 +49,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     importFileParser: {
-      handler: 'handlers/import-file-parser/index.importFileParser',
+      handler: 'handlers/index.importFileParser',
       events: [
         {
           s3: {
