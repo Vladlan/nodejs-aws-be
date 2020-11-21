@@ -1,13 +1,13 @@
 import { Client } from 'pg';
 import { DB_CONFIG } from './db.config';
 import { Product } from '../types';
-import { 
+import {
   SELECT_ALL_PRODUCTS,
   SELECT_PRODUCT,
   INSERT_PRODUCT,
   INSERT_STOCK,
 } from './sql-queries'
-import { messages } from '../utils';
+import {messages} from "../../shared/utils";
 
 export class DBClient {
   client: Client;

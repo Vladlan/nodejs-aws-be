@@ -1,29 +1,22 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import { corsHeaders, messages, logLambdaArgs } from "../utils";
-import { DBClient } from "../database"
+import {DBClient} from "../database"
+import {getRes200, getRes500, logLambdaArgs} from '../../shared/utils'
+
 
 export const getAllProducts: APIGatewayProxyHandler = async (_event, _context) => {
-    logLambdaArgs(_event, _context);
-    let client;
-    try {
-        client = new DBClient();
-        await client.connect();
-        const products = await client.getAllProducts();
+  logLambdaArgs(_event, _context);
+  let client;
+  try {
+    client = new DBClient();
+    await client.connect();
+    const products = await client.getAllProducts();
 
-        return {
-            statusCode: 200,
-            headers: corsHeaders,
-            body: JSON.stringify(products, null, 2),
-        };
-    } catch (err) {
-        console.error(err);
-        return {
-            statusCode: 500,
-            headers: corsHeaders,
-            body: messages.internalServerError,
-        };
-    } finally {
-        await client.disconnect();
-    }
+    return getRes200(JSON.stringify(products, null, 2));
+  } catch (err) {
+    console.error(err);
+    return getRes500();
+  } finally {
+    await client.disconnect();
+  }
 }
