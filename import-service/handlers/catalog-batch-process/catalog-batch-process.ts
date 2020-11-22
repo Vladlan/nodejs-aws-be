@@ -9,11 +9,18 @@ import {Product} from "../../../shared/types";
 export const createSNSParams = (
   Subject: string,
   Message: string,
+  Status: 'OK' | 'ERROR' = 'OK'
 ) => ({
   Subject,
   Message,
   MessageStructure: "string",
-  TopicArn: process.env.SNS_ARN
+  TopicArn: process.env.SNS_ARN,
+  MessageAttributes: {
+    status: {
+      DataType: "String",
+      StringValue: Status,
+    },
+  },
 });
 
 
@@ -52,6 +59,7 @@ export const catalogBatchProcess: SQSHandler =
           createSNSParams(
             'Failed to create new products',
             message,
+            'ERROR'
           )
         ).promise();
         console.log(`sns.publish res: `, res)
