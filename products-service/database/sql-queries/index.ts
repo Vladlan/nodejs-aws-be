@@ -23,8 +23,9 @@ INSERT INTO stocks (product_id, count) VALUES
 `;
 
 export const INSERT_PRODUCT = `
-INSERT INTO products (id, title, description, price) VALUES
-($1::uuid, $2::text, $3::text, $4::integer)
+INSERT INTO products (title, description, price) VALUES
+($1::text, $2::text, $3::integer)
+RETURNING id
 `;
 
 // TODO: implement migrations from lines below

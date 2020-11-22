@@ -43,12 +43,14 @@ export class DBClient {
     }
   }
 
-  async createProduct({id, title, description, price, count}: Product): Promise<Product> {
+  async createProduct({title, description, price, count}: Product): Promise<Product> {
     try {
       await this.client.query('BEGIN');
-      await this.client.query(INSERT_PRODUCT, [id, title, description, price]);
-      await this.client.query(INSERT_STOCK, [id, count]);
-      const { rows } = await this.client.query(SELECT_PRODUCT, [id]);
+      const { rows: productRows } = await this.client.query(INSERT_PRODUCT, [title, description, price]);
+      const [newProduct] = productRows;
+      const {id: productId} = newProduct;
+      await this.client.query(INSERT_STOCK, [productId, count]);
+      const { rows } = await this.client.query(SELECT_PRODUCT, [productId]);
       await this.client.query('COMMIT');
       return rows;
     } catch (err) {
