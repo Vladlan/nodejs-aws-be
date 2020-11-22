@@ -1,19 +1,17 @@
-import { Client } from 'pg';
-import { DB_CONFIG } from './db.config';
 import { Product } from '../types';
 import {
   SELECT_ALL_PRODUCTS,
   SELECT_PRODUCT,
   INSERT_PRODUCT,
-  INSERT_STOCK,
+  INSERT_STOCK, INSERT_PRODUCTS_BATCH,
 } from './sql-queries'
-import {messages} from "../../shared/utils";
+import {messages} from "../utils";
 
 export class DBClient {
-  client: Client;
+  client: any;
 
-  constructor() {
-    this.client = new Client(DB_CONFIG);
+  constructor(client) {
+    this.client = client;
   }
 
   async connect() {
@@ -55,6 +53,17 @@ export class DBClient {
       return rows;
     } catch (err) {
       throw new Error(messages.failToCreateProduct(err));
+    }
+  }
+
+  async createProducts(products: Product[]): Promise<Product[]> {
+    try {
+      await this.client.query('BEGIN');
+      const result = await this.client.query(INSERT_PRODUCTS_BATCH(products));
+      await this.client.query('COMMIT');
+      return result;
+    } catch (err) {
+      throw new Error(messages.failToInsertProductsBatch(err));
     }
   }
 

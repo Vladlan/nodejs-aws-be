@@ -15,16 +15,6 @@ describe('validateProductData', () => {
         const res = validateProductData(productData);
         expect(res.isValid).toBeTruthy();
     });
-    test('should return false if id is not specified', () => {
-        productData.id = null;
-        const res = validateProductData(productData);
-        expect(res.isValid).toBeFalsy();
-    });
-    test('should return false if id has wrong format', () => {
-        productData.id = "7567ec4b-b10c-48c5-9345-fc73c48a80aa11111";
-        const res = validateProductData(productData);
-        expect(res.isValid).toBeFalsy();
-    });
     test('should return false if title is null', () => {
         productData.title = null;
         const res = validateProductData(productData);

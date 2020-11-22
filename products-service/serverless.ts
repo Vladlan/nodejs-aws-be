@@ -1,6 +1,6 @@
 import type { Serverless } from 'serverless/aws';
 const dotenv = require('dotenv').config( {
-  path: '.env'
+  path: './../.env'
 } );
 const { DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = dotenv.parsed;
 
@@ -30,8 +30,8 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      DB_HOST, 
-      DB_PORT, 
+      DB_HOST,
+      DB_PORT,
       DB_DATABASE,
       DB_USERNAME,
       DB_PASSWORD

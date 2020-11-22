@@ -1,7 +1,8 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {DBClient} from "../database"
+import {DB_CONFIG, DBClient} from "../../shared/database"
 import {messages, logLambdaArgs, getRes200, getRes, getRes400, getRes500} from '../../shared/utils'
+import {Client} from 'pg';
 
 export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
   logLambdaArgs(event, _context);
@@ -9,7 +10,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
   try {
     const {productId} = event.pathParameters;
     if (productId && productId.length === 36) {
-      client = new DBClient();
+      client = new DBClient(new Client(DB_CONFIG));
       await client.connect();
       const product = await client.getProductById(productId);
       if (product) {
@@ -22,6 +23,6 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
     console.error(err);
     return getRes500();
   } finally {
-    await client.disconnect();
+    client.disconnect();
   }
 };

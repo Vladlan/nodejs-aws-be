@@ -1,6 +1,9 @@
 import type {Serverless} from 'serverless/aws';
 import {S3_BUCKET_NAME, SNS_TOPIC_NAME, SQS_NAME} from "./utils";
-
+const dotenv = require('dotenv').config( {
+  path: './../.env'
+} );
+const { DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = dotenv.parsed;
 const CATALOG_ITEMS_QUEUE = 'catalogItemsQueue';
 const CREATE_PRODUCT_TOPIC = 'createProductTopic';
 const CREATE_PRODUCT_SUBSCRIPTION = 'createProductSubscription';
@@ -27,6 +30,11 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      DB_HOST,
+      DB_PORT,
+      DB_DATABASE,
+      DB_USERNAME,
+      DB_PASSWORD,
       SQS_URL: {
         Ref: CATALOG_ITEMS_QUEUE
       },
