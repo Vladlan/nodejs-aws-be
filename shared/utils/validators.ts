@@ -12,9 +12,9 @@ export const validateProductData = ({title, description, price, count}: Product)
   if (description) {
     if (typeof description !== 'string') return createValidationResult(false, 'description is not a string');
   }
-  if (price && typeof price !== 'number') return createValidationResult(false, 'price is not a number');
+  if (price && typeof price !== 'number' || isNaN(price)) return createValidationResult(false, 'price is not a number');
   if (price < 0) return createValidationResult(false, 'price is less than a zero');
-  if (count && typeof count !== 'number') return createValidationResult(false, 'count is not a number');
+  if (count && typeof count !== 'number' || isNaN(price)) return createValidationResult(false, 'count is not a number');
   if (count < 0) return createValidationResult(false, 'count is less than a zero');
   return createValidationResult(true, '');
 }
