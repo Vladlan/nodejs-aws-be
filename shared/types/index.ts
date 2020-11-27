@@ -11,6 +11,10 @@ export interface DBStock {
     count: number;
 }
 
-export interface Product extends DBProduct {
+export class Product {
+    id?: string;
+    title: string;
+    description: string;
+    price: number;
     count: number;
 }

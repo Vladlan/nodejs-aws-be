@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "csv-parser": "^2.3.3",
-    "source-map-support": "^0.5.10"
+    "source-map-support": "^0.5.10",
+    "pg": "^8.4.2"
   },
   "devDependencies": {
     "aws-sdk": "^2.792.0",
@@ -23,6 +24,7 @@
     "ts-jest": "^26.4.3",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.10.2",
+    "dotenv": "^8.2.0",
     "typescript": "^3.2.4",
     "webpack": "^4.29.0",
     "webpack-node-externals": "^1.7.2"

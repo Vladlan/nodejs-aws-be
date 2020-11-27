@@ -1,6 +1,6 @@
 import {getAllProducts} from "./get-all-products";
 import {APIGatewayProxyEvent, Context} from "aws-lambda";
-import * as products from '../products/products.json';
+import * as products from '../../shared/mocks/products.json';
 
 describe('getAllProducts', () => {
     const context = {} as unknown as Context;

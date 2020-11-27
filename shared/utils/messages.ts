@@ -10,6 +10,7 @@ export const messages = {
     failToQueryAllProduct: (err: Error) => `Failed to query all products. Error: ${JSON.stringify(err, null, 2)}`,
     failToQueryProduct: (err: Error) => `Failed to query product. Error: ${JSON.stringify(err, null, 2)}`,
     failToCreateProduct: (err: Error) => `Failed to create product. Error: ${JSON.stringify(err, null, 2)}`,
+    failToInsertProductsBatch: (err: Error) => `Failed to insert products batch. Error: ${JSON.stringify(err, null, 2)}`,
     wrongProductData: `Wrong product data`,
 
     csvFileNameHasNotBeenProvided: 'CSV file name has bot been provided',

@@ -1,19 +1,17 @@
-import { Client } from 'pg';
-import { DB_CONFIG } from './db.config';
 import { Product } from '../types';
 import {
   SELECT_ALL_PRODUCTS,
   SELECT_PRODUCT,
   INSERT_PRODUCT,
-  INSERT_STOCK,
+  INSERT_STOCK, INSERT_PRODUCTS_BATCH,
 } from './sql-queries'
-import {messages} from "../../shared/utils";
+import {messages} from "../utils";
 
 export class DBClient {
-  client: Client;
+  client: any;
 
-  constructor() {
-    this.client = new Client(DB_CONFIG);
+  constructor(client) {
+    this.client = client;
   }
 
   async connect() {
@@ -43,16 +41,29 @@ export class DBClient {
     }
   }
 
-  async createProduct({id, title, description, price, count}: Product): Promise<Product> {
+  async createProduct({title, description, price, count}: Product): Promise<Product> {
     try {
       await this.client.query('BEGIN');
-      await this.client.query(INSERT_PRODUCT, [id, title, description, price]);
-      await this.client.query(INSERT_STOCK, [id, count]);
-      const { rows } = await this.client.query(SELECT_PRODUCT, [id]);
+      const { rows: productRows } = await this.client.query(INSERT_PRODUCT, [title, description, price]);
+      const [newProduct] = productRows;
+      const {id: productId} = newProduct;
+      await this.client.query(INSERT_STOCK, [productId, count]);
+      const { rows } = await this.client.query(SELECT_PRODUCT, [productId]);
       await this.client.query('COMMIT');
       return rows;
     } catch (err) {
       throw new Error(messages.failToCreateProduct(err));
+    }
+  }
+
+  async createProducts(products: Product[]): Promise<Product[]> {
+    try {
+      await this.client.query('BEGIN');
+      const result = await this.client.query(INSERT_PRODUCTS_BATCH(products));
+      await this.client.query('COMMIT');
+      return result;
+    } catch (err) {
+      throw new Error(messages.failToInsertProductsBatch(err));
     }
   }
 

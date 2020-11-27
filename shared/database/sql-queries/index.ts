@@ -1,3 +1,5 @@
+import {Product} from "../../types";
+
 export const SELECT_ALL_PRODUCTS = `
 SELECT id, title, description, price, count FROM
 (
@@ -23,8 +25,9 @@ INSERT INTO stocks (product_id, count) VALUES
 `;
 
 export const INSERT_PRODUCT = `
-INSERT INTO products (id, title, description, price) VALUES
-($1::uuid, $2::text, $3::text, $4::integer)
+INSERT INTO products (title, description, price) VALUES
+($1::text, $2::text, $3::integer)
+RETURNING id
 `;
 
 // TODO: implement migrations from lines below
@@ -46,6 +49,39 @@ CREATE TABLE IF NOT EXISTS stocks (
   count integer,
   foreign key ("product_id") references "products" ("id")
 );
+`;
+
+function getBatchValuesFromArray(data: Product[]) {
+  const values = data.map(({
+              title,
+              description,
+              price,
+              count
+            }) => {
+    return `('${title}', '${description}', ${price}, ${count})`
+  });
+  return values.join(',')
+}
+
+export const INSERT_PRODUCTS_BATCH = (data: Product[]) => `
+WITH data(title, description, price, count) AS (
+   VALUES
+    ${getBatchValuesFromArray(data)}
+   )
+, ins1 AS (
+   INSERT INTO products (title, description, price)
+   SELECT title, description, price
+   FROM data
+   RETURNING title, description, price, id AS product_id
+   )
+, ins2 AS (
+   INSERT INTO stocks (product_id, count)
+   SELECT ins1.product_id, d.count
+   FROM data d
+   JOIN ins1 USING (title, description, price)
+   RETURNING product_id, stock_id
+   )
+SELECT * FROM data;
 `;
 
 export const INSERT_PRODUCTS = `
