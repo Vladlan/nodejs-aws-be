@@ -8,7 +8,8 @@ import {
   logLambdaArgs,
   messages,
 } from '../../../shared/utils';
-import { S3_BUCKET_NAME, EU_WEST_1_REGION } from '../../utils';
+import { S3_BUCKET_NAME } from '../../utils';
+import { EU_WEST_1 } from '../../../shared/constants';
 
 export const getS3Params = (csvFileName) => ({
   Bucket: S3_BUCKET_NAME,
@@ -25,7 +26,7 @@ export const importProductsFile: APIGatewayProxyHandler = async (
   try {
     const { csvFileName } = event.queryStringParameters;
     if (csvFileName) {
-      const s3 = new AWS.S3({ region: EU_WEST_1_REGION });
+      const s3 = new AWS.S3({ region: EU_WEST_1 });
       const signedUrl = await s3.getSignedUrlPromise(
         'putObject',
         getS3Params(csvFileName),

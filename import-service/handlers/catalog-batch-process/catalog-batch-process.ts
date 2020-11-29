@@ -1,10 +1,10 @@
 import { SQSHandler } from 'aws-lambda';
 import { logLambdaArgs, validateProductsBatch } from '../../../shared/utils';
-import { EU_WEST_1_REGION } from '../../utils';
 import * as AWS from 'aws-sdk';
 import { DB_CONFIG, DBClient } from '../../../shared/database';
 import { Client } from 'pg';
 import { Product } from '../../../shared/types';
+import { EU_WEST_1 } from '../../../shared/constants';
 
 export const createSNSParams = (
   Subject: string,
@@ -39,7 +39,7 @@ export const catalogBatchProcess: SQSHandler = async (event, _context) => {
     });
     const { isValid, message } = validateProductsBatch(products);
 
-    const sns = new AWS.SNS({ region: EU_WEST_1_REGION });
+    const sns = new AWS.SNS({ region: EU_WEST_1 });
     if (isValid) {
       client = new DBClient(new Client(DB_CONFIG));
       await client.connect();

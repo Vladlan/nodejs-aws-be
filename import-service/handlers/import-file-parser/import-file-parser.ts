@@ -3,13 +3,13 @@ import 'source-map-support/register';
 import * as AWS from 'aws-sdk';
 import { logLambdaArgs } from '../../../shared/utils';
 import { copyAndDeleteS3Obj, parseS3CsvObj } from './utils';
-import { EU_WEST_1_REGION } from '../../utils';
+import { EU_WEST_1 } from '../../../shared/constants';
 
 export const importFileParser: S3Handler = async (event, _context) => {
   logLambdaArgs(event, _context);
   try {
-    const s3 = new AWS.S3({ region: EU_WEST_1_REGION });
-    const sqs = new AWS.SQS({ region: EU_WEST_1_REGION });
+    const s3 = new AWS.S3({ region: EU_WEST_1 });
+    const sqs = new AWS.SQS({ region: EU_WEST_1 });
     for (const record of event.Records) {
       const products = await parseS3CsvObj(record.s3.object.key, s3);
       for (const product of products) {
