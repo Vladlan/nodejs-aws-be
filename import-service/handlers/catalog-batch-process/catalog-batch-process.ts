@@ -5,23 +5,7 @@ import { DB_CONFIG, DBClient } from '../../../shared/database';
 import { Client } from 'pg';
 import { Product } from '../../../shared/types';
 import { EU_WEST_1 } from '../../../shared/constants';
-
-export const createSNSParams = (
-  Subject: string,
-  Message: string,
-  Status: 'OK' | 'ERROR' = 'OK',
-) => ({
-  Subject,
-  Message,
-  MessageStructure: 'string',
-  TopicArn: process.env.SNS_ARN,
-  MessageAttributes: {
-    status: {
-      DataType: 'String',
-      StringValue: Status,
-    },
-  },
-});
+import { createSNSParams } from '../../utils';
 
 export const catalogBatchProcess: SQSHandler = async (event, _context) => {
   logLambdaArgs(event, _context);

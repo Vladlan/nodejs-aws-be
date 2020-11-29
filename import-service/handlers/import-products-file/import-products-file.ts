@@ -8,15 +8,8 @@ import {
   logLambdaArgs,
   messages,
 } from '../../../shared/utils';
-import { S3_BUCKET_NAME } from '../../utils';
 import { EU_WEST_1 } from '../../../shared/constants';
-
-export const getS3Params = (csvFileName) => ({
-  Bucket: S3_BUCKET_NAME,
-  Key: `uploaded/${csvFileName}`,
-  Expires: 50,
-  ContentType: 'text/csv',
-});
+import { getS3Params } from '../../utils';
 
 export const importProductsFile: APIGatewayProxyHandler = async (
   event,
