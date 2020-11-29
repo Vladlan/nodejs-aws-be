@@ -1,28 +1,8 @@
-import {
-  APIGatewayAuthorizerResult,
-  APIGatewayTokenAuthorizerHandler,
-} from 'aws-lambda';
+import { APIGatewayTokenAuthorizerHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { UNAUTHORIZED } from '../../../shared/constants';
 import { logLambdaArgs } from '../../../shared/utils';
-
-const getPolicy = (
-  principalId,
-  resource,
-  effect = 'Deny',
-): APIGatewayAuthorizerResult => ({
-  principalId,
-  policyDocument: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Action: 'execute-api:Invoke',
-        Effect: effect,
-        Resource: resource,
-      },
-    ],
-  },
-});
+import { createAuthorizerResult } from '../../utils/create-authorizer-result';
 
 export const basicAuthorizer: APIGatewayTokenAuthorizerHandler = (
   event,
@@ -46,8 +26,8 @@ export const basicAuthorizer: APIGatewayTokenAuthorizerHandler = (
     const validUserPassword = process.env[userName];
     const effect =
       validUserPassword && validUserPassword === password ? 'Allow' : 'Deny';
-    const policy = getPolicy(authJWT, methodArn, effect);
-    callback(null, policy);
+    const result = createAuthorizerResult(authJWT, methodArn, effect);
+    callback(null, result);
   } catch (error) {
     console.log('Error:', error);
     callback(UNAUTHORIZED);
