@@ -1,19 +1,27 @@
-import {APIGatewayProxyHandler} from 'aws-lambda';
+import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import {validateProductData} from "../../shared/utils";
-import {DB_CONFIG, DBClient} from "../../shared/database"
-import {Product} from '../../shared/types';
-import {getRes, getRes400, getRes500, logLambdaArgs} from '../../shared/utils'
-import {Client} from 'pg';
+import { validateProductData } from '../../shared/utils';
+import { DB_CONFIG, DBClient } from '../../shared/database';
+import { Product } from '../../shared/types';
+import {
+  getRes,
+  getRes400,
+  getRes500,
+  logLambdaArgs,
+} from '../../shared/utils';
+import { Client } from 'pg';
 
-export const createProduct: APIGatewayProxyHandler = async (event, _context) => {
+export const createProduct: APIGatewayProxyHandler = async (
+  event,
+  _context,
+) => {
   logLambdaArgs(event, _context);
   let client;
   try {
     client = new DBClient(new Client(DB_CONFIG));
     const productData: Product = JSON.parse(event.body);
 
-    const {isValid, message} = validateProductData(productData);
+    const { isValid, message } = validateProductData(productData);
     if (isValid) {
       await client.connect();
       const products = await client.createProduct(productData);
@@ -26,4 +34,4 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   } finally {
     client.disconnect();
   }
-}
+};

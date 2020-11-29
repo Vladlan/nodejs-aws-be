@@ -1,4 +1,4 @@
-import {Product} from "../../types";
+import { Product } from '../../types';
 
 export const SELECT_ALL_PRODUCTS = `
 SELECT id, title, description, price, count FROM
@@ -52,15 +52,10 @@ CREATE TABLE IF NOT EXISTS stocks (
 `;
 
 function getBatchValuesFromArray(data: Product[]) {
-  const values = data.map(({
-              title,
-              description,
-              price,
-              count
-            }) => {
-    return `('${title}', '${description}', ${price}, ${count})`
+  const values = data.map(({ title, description, price, count }) => {
+    return `('${title}', '${description}', ${price}, ${count})`;
   });
-  return values.join(',')
+  return values.join(',');
 }
 
 export const INSERT_PRODUCTS_BATCH = (data: Product[]) => `
@@ -107,4 +102,3 @@ INSERT INTO stocks (product_id, count) VALUES
 ('7567ec4b-b10c-48c5-9445-fc73c48a80a2', 2), 
 ('7567ec4b-b10c-45c5-9345-fc73c48a80a1', 3);
 `;
-

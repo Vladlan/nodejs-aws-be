@@ -1,11 +1,13 @@
-import {APIGatewayProxyHandler} from 'aws-lambda';
+import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import {DB_CONFIG, DBClient} from "../../shared/database"
-import {getRes200, getRes500, logLambdaArgs} from '../../shared/utils'
-import {Client} from 'pg';
+import { DB_CONFIG, DBClient } from '../../shared/database';
+import { getRes200, getRes500, logLambdaArgs } from '../../shared/utils';
+import { Client } from 'pg';
 
-
-export const getAllProducts: APIGatewayProxyHandler = async (_event, _context) => {
+export const getAllProducts: APIGatewayProxyHandler = async (
+  _event,
+  _context,
+) => {
   logLambdaArgs(_event, _context);
   let client;
   try {
@@ -20,4 +22,4 @@ export const getAllProducts: APIGatewayProxyHandler = async (_event, _context) =
   } finally {
     client.disconnect();
   }
-}
+};
