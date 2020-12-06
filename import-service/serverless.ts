@@ -1,8 +1,9 @@
-import type {Serverless} from 'serverless/aws';
-import {S3_BUCKET_NAME, SNS_TOPIC_NAME, SQS_NAME} from "./utils";
+import type { Serverless } from 'serverless/aws';
+import { S3_BUCKET_NAME, SNS_TOPIC_NAME, SQS_NAME } from './utils';
+import { EU_WEST_1 } from '../shared/constants';
 
 const dotenv = require('dotenv').config({
-  path: './../.env'
+  path: './../.env',
 });
 const {
   DB_HOST,
@@ -11,7 +12,7 @@ const {
   DB_USERNAME,
   DB_PASSWORD,
   CREATE_PRODUCT_SUB_EMAIL,
-  CREATE_PRODUCT_SUB_ERRORS_EMAIL
+  CREATE_PRODUCT_SUB_ERRORS_EMAIL,
 } = dotenv.parsed;
 const CATALOG_ITEMS_QUEUE = 'catalogItemsQueue';
 const CREATE_PRODUCT_TOPIC = 'createProductTopic';
@@ -26,15 +27,15 @@ const serverlessConfiguration: Serverless = {
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
-      includeModules: true
-    }
+      includeModules: true,
+    },
   },
   // Add the serverless-webpack plugin
   plugins: ['serverless-webpack'],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
-    region: 'eu-west-1',
+    region: EU_WEST_1,
     apiGateway: {
       minimumCompressionSize: 1024,
     },
@@ -46,47 +47,47 @@ const serverlessConfiguration: Serverless = {
       DB_USERNAME,
       DB_PASSWORD,
       SQS_URL: {
-        Ref: CATALOG_ITEMS_QUEUE
+        Ref: CATALOG_ITEMS_QUEUE,
       },
       SNS_ARN: {
-        Ref: CREATE_PRODUCT_TOPIC
-      }
+        Ref: CREATE_PRODUCT_TOPIC,
+      },
     },
     iamRoleStatements: [
       {
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: `arn:aws:s3:::${S3_BUCKET_NAME}/*`
+        Resource: `arn:aws:s3:::${S3_BUCKET_NAME}/*`,
       },
       {
         Effect: 'Allow',
         Action: 'sqs:*',
         Resource: {
-          'Fn::GetAtt': [CATALOG_ITEMS_QUEUE, 'Arn']
-        }
+          'Fn::GetAtt': [CATALOG_ITEMS_QUEUE, 'Arn'],
+        },
       },
       {
         Effect: 'Allow',
         Action: 'sns:*',
         Resource: {
-          Ref: CREATE_PRODUCT_TOPIC
-        }
-      }
-    ]
+          Ref: CREATE_PRODUCT_TOPIC,
+        },
+      },
+    ],
   },
   resources: {
     Resources: {
       [CATALOG_ITEMS_QUEUE]: {
         Type: 'AWS::SQS::Queue',
         Properties: {
-          QueueName: SQS_NAME
-        }
+          QueueName: SQS_NAME,
+        },
       },
       [CREATE_PRODUCT_TOPIC]: {
         Type: 'AWS::SNS::Topic',
         Properties: {
-          TopicName: SNS_TOPIC_NAME
-        }
+          TopicName: SNS_TOPIC_NAME,
+        },
       },
       [CREATE_PRODUCT_SUBSCRIPTION]: {
         Type: 'AWS::SNS::Subscription',
@@ -94,12 +95,12 @@ const serverlessConfiguration: Serverless = {
           Endpoint: CREATE_PRODUCT_SUB_EMAIL,
           Protocol: 'email',
           TopicArn: {
-            Ref: CREATE_PRODUCT_TOPIC
+            Ref: CREATE_PRODUCT_TOPIC,
           },
           FilterPolicy: {
-            status: ["OK"],
+            status: ['OK'],
           },
-        }
+        },
       },
       [CREATE_PRODUCT_SUBSCRIPTION_ERRORS]: {
         Type: 'AWS::SNS::Subscription',
@@ -107,14 +108,28 @@ const serverlessConfiguration: Serverless = {
           Endpoint: CREATE_PRODUCT_SUB_ERRORS_EMAIL,
           Protocol: 'email',
           TopicArn: {
-            Ref: CREATE_PRODUCT_TOPIC
+            Ref: CREATE_PRODUCT_TOPIC,
           },
           FilterPolicy: {
-            status: ["ERROR"],
+            status: ['ERROR'],
           },
-        }
-      }
-    }
+        },
+      },
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Methods': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+    },
   },
   functions: {
     importProductsFile: {
@@ -125,9 +140,17 @@ const serverlessConfiguration: Serverless = {
             method: 'get',
             path: 'import/',
             cors: true,
-          }
-        }
-      ]
+            authorizer: {
+              name: 'tokenAuthorizer',
+              arn:
+                '${cf:authorization-service-${self:provider.stage}.basicAuthorizerLambdaArn}',
+              resultTtlInSeconds: 0,
+              identitySource: 'method.request.header.Authorization',
+              type: 'token',
+            },
+          },
+        },
+      ],
     },
     importFileParser: {
       handler: 'handlers/index.importFileParser',
@@ -136,13 +159,11 @@ const serverlessConfiguration: Serverless = {
           s3: {
             bucket: S3_BUCKET_NAME,
             event: 's3:ObjectCreated:*',
-            rules: [
-              {prefix: 'uploaded', suffix: '.csv',},
-            ],
-            existing: true
-          }
-        }
-      ]
+            rules: [{ prefix: 'uploaded', suffix: '.csv' }],
+            existing: true,
+          },
+        },
+      ],
     },
     catalogBatchProcess: {
       handler: 'handlers/index.catalogBatchProcess',
@@ -151,13 +172,13 @@ const serverlessConfiguration: Serverless = {
           sqs: {
             batchSize: 5,
             arn: {
-              'Fn::GetAtt': [CATALOG_ITEMS_QUEUE, 'Arn']
-            }
-          }
-        }
-      ]
-    }
-  }
-}
+              'Fn::GetAtt': [CATALOG_ITEMS_QUEUE, 'Arn'],
+            },
+          },
+        },
+      ],
+    },
+  },
+};
 
 module.exports = serverlessConfiguration;

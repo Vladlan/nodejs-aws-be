@@ -1,8 +1,15 @@
 import type { Serverless } from 'serverless/aws';
-const dotenv = require('dotenv').config( {
-  path: './../.env'
-} );
-const { DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = dotenv.parsed;
+import { EU_WEST_1 } from '../shared/constants';
+const dotenv = require('dotenv').config({
+  path: './../.env',
+});
+const {
+  DB_HOST,
+  DB_PORT,
+  DB_DATABASE,
+  DB_USERNAME,
+  DB_PASSWORD,
+} = dotenv.parsed;
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -16,15 +23,15 @@ const serverlessConfiguration: Serverless = {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: true,
-      excludeFiles: 'src/**/*.spec.[t|j]s'
-    }
+      excludeFiles: 'src/**/*.spec.[t|j]s',
+    },
   },
   // Add the serverless-webpack plugin
   plugins: ['serverless-webpack'],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
-    region: 'eu-west-1',
+    region: EU_WEST_1,
     apiGateway: {
       minimumCompressionSize: 1024,
     },
@@ -34,7 +41,7 @@ const serverlessConfiguration: Serverless = {
       DB_PORT,
       DB_DATABASE,
       DB_USERNAME,
-      DB_PASSWORD
+      DB_PASSWORD,
     },
   },
   functions: {
@@ -46,9 +53,9 @@ const serverlessConfiguration: Serverless = {
             method: 'get',
             path: 'products',
             cors: true,
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     getProductById: {
       handler: 'handlers/index.getProductById',
@@ -58,9 +65,9 @@ const serverlessConfiguration: Serverless = {
             method: 'get',
             path: 'products/{productId}',
             cors: true,
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     createProduct: {
       handler: 'handlers/index.createProduct',
@@ -70,11 +77,11 @@ const serverlessConfiguration: Serverless = {
             method: 'post',
             path: 'products',
             cors: true,
-          }
-        }
-      ]
-    }
-  }
-}
+          },
+        },
+      ],
+    },
+  },
+};
 
 module.exports = serverlessConfiguration;

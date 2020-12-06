@@ -3,9 +3,10 @@ import {
   SELECT_ALL_PRODUCTS,
   SELECT_PRODUCT,
   INSERT_PRODUCT,
-  INSERT_STOCK, INSERT_PRODUCTS_BATCH,
-} from './sql-queries'
-import {messages} from "../utils";
+  INSERT_STOCK,
+  INSERT_PRODUCTS_BATCH,
+} from './sql-queries';
+import { messages } from '../utils';
 
 export class DBClient {
   client: any;
@@ -41,12 +42,21 @@ export class DBClient {
     }
   }
 
-  async createProduct({title, description, price, count}: Product): Promise<Product> {
+  async createProduct({
+    title,
+    description,
+    price,
+    count,
+  }: Product): Promise<Product> {
     try {
       await this.client.query('BEGIN');
-      const { rows: productRows } = await this.client.query(INSERT_PRODUCT, [title, description, price]);
+      const { rows: productRows } = await this.client.query(INSERT_PRODUCT, [
+        title,
+        description,
+        price,
+      ]);
       const [newProduct] = productRows;
-      const {id: productId} = newProduct;
+      const { id: productId } = newProduct;
       await this.client.query(INSERT_STOCK, [productId, count]);
       const { rows } = await this.client.query(SELECT_PRODUCT, [productId]);
       await this.client.query('COMMIT');
@@ -75,4 +85,4 @@ export class DBClient {
       throw new Error(messages.failDbDisconnection(err));
     }
   }
-};
+}
