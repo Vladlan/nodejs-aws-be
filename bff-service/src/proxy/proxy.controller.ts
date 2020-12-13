@@ -1,9 +1,12 @@
 import {
   All,
+  CacheInterceptor,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProxyService } from './proxy.service';
 import { Request } from 'express';
@@ -12,17 +15,21 @@ import { Request } from 'express';
 export class ProxyController {
   constructor(private proxyService: ProxyService) {}
 
-  @All()
-  proxy(@Req() request: Request) {
-    const [serviceName, ...restPath] = request.url.split('/').filter(Boolean);
-    console.log(`serviceName: `, serviceName);
-    console.log(`restPath: `, restPath);
-    const isServiceAvailable = process.env[serviceName];
+  @Get('product/products')
+  @UseInterceptors(CacheInterceptor)
+  productsProxy(@Req() req: Request) {
+    return this.proxyService.request(`${process.env.product}/products`, req);
+  }
 
-    if (isServiceAvailable)
+  @All()
+  proxy(@Req() req: Request) {
+    const [serviceName, ...restPath] = req.url.split('/').filter(Boolean);
+    const serviceUri = process.env[serviceName];
+
+    if (serviceUri)
       return this.proxyService.request(
-        `http://${serviceName}/${restPath.join('/')}`,
-        request as any,
+        `${serviceUri}/${restPath.join('/')}`,
+        req,
       );
 
     throw new HttpException(
