@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { AxiosResponse, AxiosError } from 'axios';
 
 @Injectable()
 export class ProxyService {
@@ -14,7 +15,7 @@ export class ProxyService {
   request(
     url: string,
     { method, params, body: data },
-  ): Observable<any | never> {
+  ): Observable<AxiosResponse | AxiosError> {
     return this.httpService
       .request({
         url,
@@ -23,8 +24,11 @@ export class ProxyService {
         ...(Object.keys(data).length ? { data } : {}),
       })
       .pipe(
-        map((res) => res.data),
-        catchError(() => {
+        map(({ data }) => data),
+        catchError(({ response }) => {
+          if (response) {
+            throw new HttpException(response.statusText, response.status);
+          }
           throw new HttpException(
             'Internal server error',
             HttpStatus.INTERNAL_SERVER_ERROR,
