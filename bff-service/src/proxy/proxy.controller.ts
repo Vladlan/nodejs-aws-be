@@ -25,6 +25,8 @@ export class ProxyController {
   proxy(@Req() req: Request) {
     const [serviceName, ...restPath] = req.url.split('/').filter(Boolean);
     const serviceUri = process.env[serviceName];
+    console.log(`serviceUri: `, serviceUri);
+    console.log(`restPath: `, restPath);
 
     if (serviceUri)
       return this.proxyService.request(
